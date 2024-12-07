@@ -19,12 +19,25 @@ fn validate(report: &Report) -> bool {
     })
 }
 
+fn validate_v2(report: &Report) -> bool {
+    if validate(report) {
+        return true;
+    }
+    (0..report.len())
+        .map(|i| {
+            let mut r2 = report.clone();
+            r2.remove(i);
+            r2
+        })
+        .any(|r| validate(&r))
+}
+
 pub fn part_one(input: &str) -> Option<usize> {
     Some(input.lines().map(parse_report).filter(|r|validate(r)).count())
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
-    None
+    Some(input.lines().map(parse_report).filter(|r|validate_v2(r)).count())
 }
 
 #[cfg(test)]
@@ -40,6 +53,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(4));
     }
 }
