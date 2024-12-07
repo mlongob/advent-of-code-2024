@@ -12,7 +12,15 @@ pub struct Matrix {
     pub rows: usize,
 }
 
-const CHARS: [char; 4] = ['X', 'M', 'A', 'S'];
+const XMAS_CHARS: [char; 4] = ['X', 'M', 'A', 'S'];
+const MAS_CHARS: [char; 3] = ['M', 'A', 'S'];
+
+const X_DIRECTIONS: [[Direction; 2]; 4] = [
+    [Direction::SE, Direction::NW],
+    [Direction::SW, Direction::NE],
+    [Direction::NW, Direction::SE],
+    [Direction::NE, Direction::SW],
+];
 
 impl Matrix {
     fn get(&self, point: &Point) -> char {
@@ -31,17 +39,17 @@ impl Matrix {
         point.x >= 0 && point.x < self.cols as isize && point.y >= 0 && point.y < self.rows as isize
     }
 
-    fn starts(&self) -> Vec<Point> {
+    fn starts(&self, start_char: char) -> Vec<Point> {
         iproduct!(0..self.cols, 0..self.rows)
             .filter_map(|(x, y)| {
                 let point = Point {
                     x: x as isize,
                     y: y as isize,
                 };
-                const START: char = CHARS[0];
-                match self.get(&point) {
-                    START => Some(point),
-                    _ => None,
+                if self.get(&point) == start_char {
+                    Some(point)
+                } else {
+                    None
                 }
             })
             .collect()
@@ -74,11 +82,11 @@ pub fn part_one(input: &str) -> Option<usize> {
     let matrix: Matrix = input.parse().ok()?;
     Some(
         matrix
-            .starts()
+            .starts(XMAS_CHARS[0])
             .into_iter()
             .cartesian_product(Direction::ALL_DIRECTIONS)
             .filter(|(start, direction)| {
-                CHARS
+                XMAS_CHARS
                     .iter()
                     .try_fold(*start, |point, c| {
                         if matrix.safe_get(&point)? != *c {
@@ -93,8 +101,30 @@ pub fn part_one(input: &str) -> Option<usize> {
     )
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<usize> {
+    let matrix: Matrix = input.parse().ok()?;
+    Some(
+        matrix
+            .starts(MAS_CHARS[1])
+            .into_iter()
+            .filter(|start| {
+                X_DIRECTIONS
+                    .iter()
+                    .filter(|dirs| {
+                        [MAS_CHARS[0], MAS_CHARS[2]]
+                            .iter()
+                            .zip(*dirs)
+                            .all(|(c, direction)| {
+                                let neig = matrix.safe_get(&start.neighbor(*direction));
+                                
+                                neig == Some(*c)
+                            })
+                    })
+                    .count()
+                    == 2
+            })
+            .count(),
+    )
 }
 
 #[cfg(test)]
@@ -110,6 +140,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(9));
     }
 }
