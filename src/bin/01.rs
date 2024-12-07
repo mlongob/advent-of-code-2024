@@ -3,21 +3,25 @@ use std::collections::HashMap;
 advent_of_code::solution!(1);
 
 fn parse_line(line: &str) -> Option<(u32, u32)> {
-    let mut values = line.split_ascii_whitespace().filter_map(|x|x.parse().ok());
+    let mut values = line.split_ascii_whitespace().filter_map(|x| x.parse().ok());
     let left = values.next()?;
     let right = values.next()?;
     Some((left, right))
 }
 
 fn parse_input(input: &str) -> (Vec<u32>, Vec<u32>) {
-    input.lines().filter_map(|l|parse_line(l)).unzip()
+    input.lines().filter_map(parse_line).unzip()
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
     let (mut left, mut right) = parse_input(input);
     left.sort();
     right.sort();
-    Some(left.into_iter().zip(right).fold(0, |acc, (l, r)|acc + l.abs_diff(r)))
+    Some(
+        left.into_iter()
+            .zip(right)
+            .fold(0, |acc, (l, r)| acc + l.abs_diff(r)),
+    )
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -27,7 +31,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         *acc.entry(val).or_default() += 1;
         acc
     });
-    Some(left.iter().map(|x|x * counts.get(x).unwrap_or(&0)).sum())
+    Some(left.iter().map(|x| x * counts.get(x).unwrap_or(&0)).sum())
 }
 
 #[cfg(test)]
