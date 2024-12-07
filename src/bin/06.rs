@@ -130,7 +130,6 @@ pub fn part_two(input: &str) -> Option<usize> {
     }
 
     Some(cycles)
-
 }
 
 #[cfg(test)]
