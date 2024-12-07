@@ -116,7 +116,6 @@ pub fn part_two(input: &str) -> Option<usize> {
                             .zip(*dirs)
                             .all(|(c, direction)| {
                                 let neig = matrix.safe_get(&start.neighbor(*direction));
-                                
                                 neig == Some(*c)
                             })
                     })
