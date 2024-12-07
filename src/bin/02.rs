@@ -35,23 +35,11 @@ fn validate_v2(report: &Report) -> bool {
 }
 
 pub fn part_one(input: &str) -> Option<usize> {
-    Some(
-        input
-            .lines()
-            .map(parse_report)
-            .filter(validate)
-            .count(),
-    )
+    Some(input.lines().map(parse_report).filter(validate).count())
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
-    Some(
-        input
-            .lines()
-            .map(parse_report)
-            .filter(validate_v2)
-            .count(),
-    )
+    Some(input.lines().map(parse_report).filter(validate_v2).count())
 }
 
 #[cfg(test)]
