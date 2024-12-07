@@ -22,6 +22,32 @@ impl Direction {
         Direction::SE,
         Direction::SW,
     ];
+
+    pub fn invert(&self) -> Direction {
+        match self {
+            Direction::N => Direction::S,
+            Direction::E => Direction::W,
+            Direction::S => Direction::N,
+            Direction::W => Direction::E,
+            Direction::NW => Direction::SE,
+            Direction::NE => Direction::SW,
+            Direction::SE => Direction::NW,
+            Direction::SW => Direction::NE,
+        }
+    }
+
+    pub fn rotate_clockwise(&self) -> Direction {
+        match self {
+            Direction::N => Direction::E,
+            Direction::E => Direction::S,
+            Direction::S => Direction::W,
+            Direction::W => Direction::N,
+            Direction::NW => Direction::NE,
+            Direction::NE => Direction::SE,
+            Direction::SE => Direction::SW,
+            Direction::SW => Direction::NW,
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
